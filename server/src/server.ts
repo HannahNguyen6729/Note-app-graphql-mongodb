@@ -36,8 +36,9 @@ const resolvers = {
     },
   },
   Folder: {
-    author: () => {
-      return { id: "123", name: "Anna" };
+    author: (parent: any, args: any, contextValue: any, info: any) => {
+      console.log("parent", parent, "args", args, contextValue, info);
+      return fakeData.authors.find((author) => author.id === parent.authorId);
     },
   },
 };
