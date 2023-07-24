@@ -5,11 +5,25 @@ import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { expressMiddleware } from "@apollo/server/express4";
 import { json } from "body-parser";
+import fakeData from "../fakeData/index";
 
 const app = express();
 const httpServer = http.createServer(app);
 
 const typeDefs = `#graphql
+
+	type Folder {
+		id:String,
+		name: String,
+		createdAt:String,
+		author: Author
+	}
+
+	type Author{
+		id:String,
+		name:String
+	}
+
 	type Query {
 		folders: [Folder]
 	}
@@ -17,8 +31,13 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    name: () => {
-      return "Mamasita";
+    folders: () => {
+      return fakeData.folders;
+    },
+  },
+  Folder: {
+    author: () => {
+      return { id: "123", name: "Anna" };
     },
   },
 };
