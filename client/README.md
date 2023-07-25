@@ -1,3 +1,22 @@
+# Installation
+Vite react
+https://vitejs.dev/guide/
+npm create vite@latest
+
+react-router-dom
+https://reactrouter.com/en/main/start/tutorial
+npm install react-router-dom
+
+eslint-cofig-react-app
+https://www.npmjs.com/package/eslint-config-react-app
+npm install --save-dev eslint-config-react-app eslint@^8.0.0
+
+material UI
+https://mui.com/material-ui/getting-started/installation/
+npm install @mui/material @emotion/react @emotion/styled
+
+
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
