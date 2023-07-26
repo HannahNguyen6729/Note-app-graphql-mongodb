@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Box, Card, CardContent, List, Typography } from "@mui/material";
 
 const FolderList = ({ folders }) => {
-  const [activeFolderId, setActiveFolderId] = useState(null);
+  const { folderId } = useParams();
+  const [activeFolderId, setActiveFolderId] = useState(folderId);
 
   return (
     <List
