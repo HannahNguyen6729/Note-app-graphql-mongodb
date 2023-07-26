@@ -1,13 +1,14 @@
-import React from "react";
-import { createBrowserRouter } from "react-router-dom";
-import { Outlet } from "react-router-dom";
-import Home from "../pages/Home";
-import Login from "../pages/Login";
-import AuthProvider from "../context/AuthProvider";
-import ProtectedRoute from "./ProtectedRoute";
-import ErrorPage from "../pages/ErrorPage";
-import NoteList from "../components/NoteList";
-import Note from "../components/Note";
+import React from 'react';
+import { createBrowserRouter } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import axios from 'axios';
+import Home from '../pages/Home';
+import Login from '../pages/Login';
+import AuthProvider from '../context/AuthProvider';
+import ProtectedRoute from './ProtectedRoute';
+import ErrorPage from '../pages/ErrorPage';
+import NoteList from '../components/NoteList';
+import Note from '../components/Note';
 
 const AuthLayout = () => {
   return (
@@ -26,9 +27,28 @@ const router = createBrowserRouter([
         children: [
           {
             element: <Home />,
-            path: "/",
+            path: '/',
             loader: async () => {
-              return { id: 1 };
+              const query = `query Folders {
+                folders {
+                  id
+                  name
+                  createdAt
+                }
+              }
+				`;
+              const response = await fetch('http://localhost:4000/graphql', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                },
+                body: JSON.stringify({ query }),
+              });
+
+              const data = await response.json();
+              console.log('axios', data.data);
+              return data;
             },
             children: [
               {
@@ -46,7 +66,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/login",
+        path: '/login',
         element: <Login />,
       },
     ],
