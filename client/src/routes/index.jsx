@@ -6,6 +6,8 @@ import Login from "../pages/Login";
 import AuthProvider from "../context/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute";
 import ErrorPage from "../pages/ErrorPage";
+import NoteList from "../components/NoteList";
+import Note from "../components/Note";
 
 const AuthLayout = () => {
   return (
@@ -25,6 +27,20 @@ const router = createBrowserRouter([
           {
             element: <Home />,
             path: "/",
+            loader: async () => {
+              return { id: 1 };
+            },
+            children: [
+              {
+                element: <NoteList />,
+                path: `/folders/:folderId`,
+                children: [
+                  {
+                    element: <Note />,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
