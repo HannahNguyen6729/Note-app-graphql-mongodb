@@ -36,7 +36,7 @@ const router = createBrowserRouter([
                   createdAt
                 }
               }
-				`;
+        `;
               const response = await fetch('http://localhost:4000/graphql', {
                 method: 'POST',
                 headers: {
@@ -54,6 +54,41 @@ const router = createBrowserRouter([
               {
                 element: <NoteList />,
                 path: `/folders/:folderId`,
+
+                loader: async ({ params }) => {
+                  console.log(params);
+                  const query = `query Folder($folderId: String) {
+                    folder(folderId: $folderId) {
+                      name
+                      id
+                      notes {
+                        id
+                        content
+                      }
+                    }
+                  }
+            `;
+                  const response = await fetch(
+                    'http://localhost:4000/graphql',
+                    {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                      },
+                      body: JSON.stringify({
+                        query,
+                        variables: {
+                          folderId: params.folderId,
+                        },
+                      }),
+                    }
+                  );
+
+                  const data = await response.json();
+                  console.log('notes in the detail folder', data.data);
+                  return data;
+                },
                 children: [
                   {
                     element: <Note />,
