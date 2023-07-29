@@ -6,6 +6,8 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { expressMiddleware } from '@apollo/server/express4';
 import { json } from 'body-parser';
 import fakeData from '../fakeData/index';
+import mongoose, { ConnectOptions } from 'mongoose';
+import 'dotenv/config';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -68,6 +70,27 @@ const resolvers = {
   },
 };
 
+//connect to database:
+const connectDB = async () => {
+  const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.cfdt7pq.mongodb.net/?retryWrites=true&w=majority`;
+
+  mongoose.set('strictQuery', false);
+  await mongoose
+    .connect(URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    } as ConnectOptions)
+    .then(async () => {
+      console.log('Connected to Database - Initial Connection');
+      await main();
+    })
+    .catch((err) => {
+      console.log(`Initial Database connection error occured`, err);
+    });
+};
+
+connectDB();
+
 const main = async () => {
   const server = new ApolloServer({
     typeDefs,
@@ -85,4 +108,3 @@ const main = async () => {
   );
   console.log(`Server is ready at http://localhost:4000`);
 };
-main();
