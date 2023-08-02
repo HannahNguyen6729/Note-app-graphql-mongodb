@@ -5,70 +5,13 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { expressMiddleware } from '@apollo/server/express4';
 import { json } from 'body-parser';
-import fakeData from '../fakeData/index';
 import mongoose, { ConnectOptions } from 'mongoose';
 import 'dotenv/config';
+import { typeDefs } from '../schemas/index';
+import { resolvers } from '../resolvers/index';
 
 const app = express();
 const httpServer = http.createServer(app);
-
-const typeDefs = `#graphql
-
-	type Folder {
-		id:String,
-		name: String,
-		createdAt:String,
-		author: Author,
-    notes: [Note]
-	}
-
-  type Note {
-    id:String,
-    content: String,
-  }
-
-	type Author{
-		id:String,
-		name:String
-	}
-
-	type Query {
-		folders: [Folder],
-    folder(folderId: String): Folder,
-    note(noteId:String): Note
-	}
-`;
-
-const resolvers = {
-  Query: {
-    folders: () => {
-      return fakeData.folders;
-    },
-    folder: (parent: any, args: any) => {
-      //parent: Folder, args: params sent from client
-      const folderId: string = args.folderId;
-      const foundFolder = fakeData.folders.find(
-        (folder) => folder.id === folderId
-      );
-      console.log(parent);
-      return foundFolder;
-    },
-    note: (parent: any, args: any) => {
-      console.log('parent', parent);
-      return fakeData.notes.find((note) => note.id === args.noteId);
-    },
-  },
-  Folder: {
-    author: (parent: any, args: any, contextValue: any, info: any) => {
-      console.log('parent', parent, 'args', args, contextValue, info);
-      return fakeData.authors.find((author) => author.id === parent.authorId);
-    },
-    notes: (parent: any, args: any) => {
-      console.log('parent', parent, 'args', args);
-      return fakeData.notes.filter((note) => note.folderId === parent.id);
-    },
-  },
-};
 
 //connect to database:
 const connectDB = async () => {
