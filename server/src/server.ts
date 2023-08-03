@@ -9,6 +9,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import 'dotenv/config';
 import { typeDefs } from '../schemas/index';
 import { resolvers } from '../resolvers/index';
+import '../firebase/config';
 
 const app = express();
 const httpServer = http.createServer(app);
