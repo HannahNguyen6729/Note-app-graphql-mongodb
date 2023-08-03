@@ -9,7 +9,6 @@ const noteSchema = new mongoose.Schema<Note>(
   {
     content: {
       type: String,
-      required: true,
     },
     folderId: {
       type: String,

@@ -1,6 +1,7 @@
 import fakeData from '../fakeData/index';
 import FolderModel from '../models/FolderModel';
 import AuthorModel from '../models/AuthorModel';
+import NoteModel from '../models/NoteModel';
 
 export const resolvers = {
   Query: {
@@ -22,9 +23,10 @@ export const resolvers = {
       console.log(parent);
       return foundFolder;
     },
-    note: (parent: any, args: any) => {
+    note: async (parent: any, args: any) => {
       console.log('parent', parent);
-      return fakeData.notes.find((note) => note.id === args.noteId);
+      const note = await NoteModel.findById(args.noteId);
+      return note;
     },
   },
   Folder: {
@@ -32,9 +34,15 @@ export const resolvers = {
       console.log('parent', parent, 'args', args, contextValue, info);
       return fakeData.authors.find((author) => author.id === parent.authorId);
     },
-    notes: (parent: any, args: any) => {
+    notes: async (parent: any, args: any) => {
       console.log('parent', parent, 'args', args);
-      return fakeData.notes.filter((note) => note.folderId === parent.id);
+      const notes = await NoteModel.find({
+        folderId: parent.id,
+      }).sort({
+        updatedAt: 'desc',
+      });
+      console.log({ notes });
+      return notes;
     },
   },
   Mutation: {
@@ -54,6 +62,12 @@ export const resolvers = {
       }
       console.log('foundUser', foundUser);
       return foundUser;
+    },
+    addNote: async (parent: any, args: any) => {
+      console.log(parent);
+      const newNote = new NoteModel(args);
+      await newNote.save();
+      return newNote;
     },
   },
 };

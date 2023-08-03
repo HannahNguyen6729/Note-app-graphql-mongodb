@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { Link, Outlet, useLoaderData, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSubmit,
+} from 'react-router-dom';
 import {
   Box,
   Card,
@@ -13,11 +20,40 @@ import {
 import { NoteAddOutlined } from '@mui/icons-material';
 
 const NoteList = () => {
-  const { noteId } = useParams();
+  const { noteId, folderId } = useParams();
   const [activeNoteId, setActiveNoteId] = useState(noteId);
 
   const response = useLoaderData();
   const detailFolder = response.data.folder;
+
+  const submit = useSubmit();
+  const navigate = useNavigate();
+
+  console.log('[NoteLIST]', { detailFolder });
+
+  const handleAddNewNote = () => {
+    submit(
+      {
+        content: '',
+        folderId,
+      },
+      {
+        method: 'post',
+        action: `/folders/${folderId}`,
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (noteId) {
+      setActiveNoteId(noteId);
+      return;
+    }
+
+    if (detailFolder?.notes?.[0]) {
+      navigate(`note/${detailFolder.notes[0].id}`);
+    }
+  }, [noteId, detailFolder, navigate]);
 
   return (
     <Grid container height="100%">
@@ -44,10 +80,7 @@ const NoteList = () => {
               }}
             >
               <Typography sx={{ fontWeight: 'bold' }}>Notes</Typography>
-              <Tooltip
-                title="Add Note"
-                // onClick={handleAddNewNote}
-              >
+              <Tooltip title="Add Note" onClick={handleAddNewNote}>
                 <IconButton size="small">
                   <NoteAddOutlined />
                 </IconButton>
