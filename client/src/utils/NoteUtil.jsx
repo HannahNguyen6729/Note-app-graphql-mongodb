@@ -1,3 +1,5 @@
+import { graphqlRequest } from './request';
+
 export const noteLoader = async ({ params }) => {
   const noteId = params.noteId;
   const query = `query Folder($noteId: String) {
@@ -7,7 +9,15 @@ export const noteLoader = async ({ params }) => {
       }
     }
 `;
-  const response = await fetch('http://localhost:4000/graphql', {
+  const data = await graphqlRequest({
+    query,
+    variables: {
+      noteId,
+    },
+  });
+  return data;
+
+  /*  const response = await fetch('http://localhost:4000/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -22,7 +32,7 @@ export const noteLoader = async ({ params }) => {
   });
 
   const data = await response.json();
-  return data;
+  return data; */
 };
 
 export const notesLoader = async ({ params }) => {
@@ -38,7 +48,16 @@ export const notesLoader = async ({ params }) => {
       }
     }
 `;
-  const response = await fetch('http://localhost:4000/graphql', {
+
+  const data = await graphqlRequest({
+    query,
+    variables: {
+      folderId,
+    },
+  });
+  return data;
+
+  /* const response = await fetch('http://localhost:4000/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -53,5 +72,5 @@ export const notesLoader = async ({ params }) => {
   });
 
   const data = await response.json();
-  return data;
+  return data; */
 };
