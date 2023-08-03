@@ -37,7 +37,7 @@ export const noteLoader = async ({ params }) => {
 
 export const notesLoader = async ({ params }) => {
   const folderId = params.folderId;
-  const query = `query Folder($folderId: String) {
+  const query = `query Folder($folderId: String!) {
       folder(folderId: $folderId) {
         name
         id

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Box, Card, CardContent, List, Typography } from "@mui/material";
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { Box, Card, CardContent, List, Typography } from '@mui/material';
+import NewFolder from './NewFolder';
 
 const FolderList = ({ folders }) => {
   const { folderId } = useParams();
@@ -9,24 +10,25 @@ const FolderList = ({ folders }) => {
   return (
     <List
       sx={{
-        width: "100%",
-        bgcolor: "#7D9D9C",
-        height: "100%",
-        padding: "10px",
-        textAlign: "left",
-        overflowY: "auto",
+        width: '100%',
+        bgcolor: '#7D9D9C',
+        height: '100%',
+        padding: '10px',
+        textAlign: 'left',
+        overflowY: 'auto',
       }}
       subheader={
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
-          <Typography sx={{ fontWeight: "bold", color: "white" }}>
+          <Typography sx={{ fontWeight: 'bold', color: 'white' }}>
             Folders
           </Typography>
+          <NewFolder />
         </Box>
       }
     >
@@ -36,21 +38,21 @@ const FolderList = ({ folders }) => {
             key={id}
             to={`folders/${id}`}
             style={{
-              textDecoration: "none",
+              textDecoration: 'none',
             }}
             onClick={() => setActiveFolderId(id)}
           >
             <Card
               sx={{
-                mb: "5px",
+                mb: '5px',
                 backgroundColor:
-                  id === activeFolderId ? "rgb(255 211 140)" : null,
+                  id === activeFolderId ? 'rgb(255 211 140)' : null,
               }}
             >
               <CardContent
-                sx={{ "&:last-child": { pb: "10px" }, padding: "10px" }}
+                sx={{ '&:last-child': { pb: '10px' }, padding: '10px' }}
               >
-                <Typography sx={{ fontSize: 16, fontWeight: "bold" }}>
+                <Typography sx={{ fontSize: 16, fontWeight: 'bold' }}>
                   {name}
                 </Typography>
               </CardContent>
