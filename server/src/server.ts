@@ -10,6 +10,7 @@ import 'dotenv/config';
 import { typeDefs } from '../schemas/index';
 import { resolvers } from '../resolvers/index';
 import '../firebase/config';
+import { getAuth } from 'firebase-admin/auth';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -45,7 +46,38 @@ const main = async () => {
   // instance before passing the instance to `expressMiddleware`
   await server.start();
 
-  app.use(cors<cors.CorsRequest>(), json(), expressMiddleware(server));
+  //authorization middleware
+  const authorizationJWT = async (req: any, res: any, next: any) => {
+    const authorizationHeader = req.headers.authorization;
+    if (authorizationHeader) {
+      const accessToken = authorizationHeader.split(' ')[1];
+      getAuth()
+        .verifyIdToken(accessToken)
+        .then((decodedToken) => {
+          const uid = decodedToken.uid;
+          res.locals.uid = uid;
+          next();
+        })
+        .catch((error) => {
+          console.log({ error });
+          return res.status(403).json({ message: 'Forbidden', error });
+        });
+    } else {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+  };
+
+  app.use(
+    cors<cors.CorsRequest>(),
+    authorizationJWT,
+    json(),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => {
+        console.log(req);
+        return { uid: res.locals.uid };
+      },
+    })
+  );
 
   await new Promise((resolve: any) =>
     httpServer.listen({ port: 4000 }, resolve)

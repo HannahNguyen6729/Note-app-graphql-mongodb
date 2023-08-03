@@ -3,10 +3,12 @@ import FolderModel from '../models/FolderModel';
 
 export const resolvers = {
   Query: {
-    folders: async () => {
-      const folders = await FolderModel.find();
+    folders: async (parent: any, args: any, context: any) => {
+      const folders = await FolderModel.find({
+        authorId: context.uid,
+      });
+      console.log({ parent, args, context });
       return folders;
-      //  return fakeData.folders;
     },
     folder: async (parent: any, args: any) => {
       //parent: Folder, args: params sent from client
