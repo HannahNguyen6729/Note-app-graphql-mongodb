@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
-import axios from 'axios';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import AuthProvider from '../context/AuthProvider';
@@ -9,7 +8,12 @@ import ProtectedRoute from './ProtectedRoute';
 import ErrorPage from '../pages/ErrorPage';
 import NoteList from '../components/NoteList';
 import Note from '../components/Note';
-import { addNewNote, noteLoader, notesLoader } from '../utils/NoteUtil';
+import {
+  addNewNote,
+  noteLoader,
+  notesLoader,
+  updateNote,
+} from '../utils/NoteUtil';
 import { foldersLoader } from '../utils/FolderUtil';
 
 const AuthLayout = () => {
@@ -42,6 +46,7 @@ const router = createBrowserRouter([
                     element: <Note />,
                     path: `note/:noteId`,
                     loader: noteLoader,
+                    action: updateNote,
                   },
                 ],
               },

@@ -8,7 +8,8 @@ import {
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useSubmit, useLocation } from 'react-router-dom';
+import { debounce } from '@mui/material';
 
 const Note = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -16,12 +17,14 @@ const Note = () => {
 
   const response = useLoaderData();
   const note = response.data.note;
+  const submit = useSubmit();
+  const location = useLocation();
 
   //note data got from backend then send back to it
-  const [rawHtml, setRawHtml] = useState(note.content);
+  const [rawHTML, setRawHTML] = useState(note.content);
 
   useEffect(() => {
-    setRawHtml(note.content);
+    setRawHTML(note.content);
   }, [note.content]);
 
   useEffect(() => {
@@ -35,8 +38,28 @@ const Note = () => {
 
   const handleOnChange = (e) => {
     setEditorState(e);
-    setRawHtml(draftToHtml(convertToRaw(e.getCurrentContent())));
+    setRawHTML(draftToHtml(convertToRaw(e.getCurrentContent())));
   };
+
+  useEffect(() => {
+    debouncedMemorized(rawHTML, note, location.pathname);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawHTML, location.pathname]);
+
+  const debouncedMemorized = React.useMemo(() => {
+    return debounce((rawHTML, note, pathname) => {
+      if (rawHTML === note.content) return;
+
+      submit(
+        { ...note, content: rawHTML },
+        {
+          method: 'post',
+          action: pathname,
+        }
+      );
+    }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div>

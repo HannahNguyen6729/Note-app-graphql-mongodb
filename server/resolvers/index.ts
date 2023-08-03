@@ -69,5 +69,11 @@ export const resolvers = {
       await newNote.save();
       return newNote;
     },
+    updateNote: async (parent: any, args: any) => {
+      console.log(parent);
+      const noteId = args.id;
+      const note = await NoteModel.findByIdAndUpdate(noteId, args);
+      return note;
+    },
   },
 };
