@@ -1,5 +1,6 @@
 import fakeData from '../fakeData/index';
 import FolderModel from '../models/FolderModel';
+import AuthorModel from '../models/AuthorModel';
 
 export const resolvers = {
   Query: {
@@ -40,6 +41,17 @@ export const resolvers = {
       console.log('newFolder', newFolder, 'parent', parent);
       await newFolder.save();
       return newFolder;
+    },
+    register: async (parent: any, args: any) => {
+      console.log('parent : ', parent, 'args', args);
+      const foundUser = await AuthorModel.findOne({ uid: args.uid });
+      if (!foundUser) {
+        const newUser = new AuthorModel(args);
+        await newUser.save();
+        return newUser;
+      }
+      console.log('foundUser', foundUser);
+      return foundUser;
     },
   },
 };
